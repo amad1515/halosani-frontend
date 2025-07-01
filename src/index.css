@@ -1,0 +1,247 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Light mode colors by default */
+  color-scheme: light dark;
+  color: #1a1a1a;
+  background-color: #f8fafc; /* Light gray background */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive base styles */
+body {
+  margin: 1;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #f8fafc; /* Match the root background */
+}
+
+/* Typography */
+h1 {
+  @apply text-3xl font-bold sm:text-4xl md:text-5xl;
+  line-height: 1.2;
+}
+
+h2 {
+  @apply text-2xl font-bold sm:text-3xl;
+}
+
+h3 {
+  @apply text-xl font-semibold sm:text-2xl;
+}
+
+/* Links */
+a {
+  @apply font-medium text-blue-600 transition-colors hover:text-blue-800;
+}
+
+/* Buttons */
+button {
+  @apply rounded-lg border border-transparent px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+}
+
+/* Forms */
+input, textarea, select {
+  @apply w-full rounded-lg border border-gray-300 px-4 py-2 text-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+}
+
+/* Container */
+.container {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .mobile-hidden {
+    display: none;
+  }
+}
+
+@media (min-width: 641px) {
+  .desktop-hidden {
+    display: none;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #e2e8f0;
+    background-color: #0f172a; /* Dark slate background */
+  }
+
+  body {
+    background-color: #0f172a;
+  }
+
+  a {
+    @apply text-blue-400 hover:text-blue-300;
+  }
+
+  input, textarea, select {
+    @apply border-gray-600 bg-gray-700 text-white focus:border-blue-400 focus:ring-blue-400;
+  }
+
+  .btn-primary {
+    @apply bg-blue-700 hover:bg-blue-600;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-700 text-gray-200 hover:bg-gray-600;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #475569;
+  border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+}
+
+/* Add this to your index.css or create a new CSS file */
+
+/* Base styles for the motion div container */
+.motion-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Center the motion div on all devices */
+.motion-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Responsive motion div styles */
+.motion-responsive {
+  width: 100%;
+  max-width: 1200px; /* Adjust based on your design needs */
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  .motion-responsive {
+    padding: 1rem;
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .motion-center {
+    padding: 0;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+}
+
+/* Tablet-specific styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .motion-responsive {
+    padding: 1.5rem;
+    margin: 1.5rem;
+    width: calc(100% - 3rem);
+  }
+}
+
+/* Animation base styles */
+.motion-animate {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+/* Specific animation for your motion div */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeInUp {
+  animation-name: fadeInUp;
+}
+
+/* Loading spinner centering */
+.loading-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* For your specific motion div in the component */
+.main-motion-div {
+  width: 100%;
+  max-width: 90%;
+  margin: 2rem auto;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .main-motion-div {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+}

@@ -13,8 +13,9 @@ const Header = () => {
 
   // Check auth status
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
+    const user_token = localStorage.getItem('user_token
+                                            ');
+    setIsLoggedIn(!!user_token);
   }, [location]); // Update when location changes
 
   // Handle scroll effect
@@ -29,7 +30,7 @@ const Header = () => {
   // Handle logout
   // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Ubah ini untuk konsisten dengan pengecekan login
+    localStorage.removeItem('user_token'); // Ubah ini untuk konsisten dengan pengecekan login
     setIsLoggedIn(false);
     navigate('/user/login');
     if (isOpen) setIsOpen(false); // Close mobile menu if open

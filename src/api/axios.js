@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const api = axios.create({
   baseURL: 'https://apihalosani.cloud/api',
@@ -7,7 +8,7 @@ const api = axios.create({
   },
 });
 
-// Daftar endpoint yang tidak membutuhkan token
+// Endpoint yang tidak membutuhkan token
 const noAuthRequired = [
   '/login',
   '/register',
@@ -21,11 +22,11 @@ const noAuthRequired = [
 api.interceptors.request.use(
   (config) => {
     // Skip penambahan token untuk endpoint tertentu
-    if (noAuthRequired.some(path => config.url?.includes(path))) {
+    if (noAuthRequired.some(path => config.url.includes(path))) {
       return config;
     }
 
-    const isAdminRequest = config.url?.startsWith('/admin');
+    const isAdminRequest = config.url.startsWith('/admin');
     const token = isAdminRequest
       ? localStorage.getItem('admin_token')
       : localStorage.getItem('user_token');
@@ -50,9 +51,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      const isAdminRequest = error.config.url?.startsWith('/admin');
+    const originalRequest = error.config;
+    
+    // Handle 401 Unauthorized
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
       
+      const isAdminRequest = originalRequest.url.startsWith('/admin');
+      
+      // Hapus token dari localStorage
       if (isAdminRequest) {
         localStorage.removeItem('admin_token');
         window.location.href = '/admin/login';
@@ -61,11 +68,14 @@ api.interceptors.response.use(
         window.location.href = '/login';
       }
       
-      // Tampilkan pesan error jika ada
+      // Tampilkan pesan error
       if (error.response.data?.message) {
-        console.error('Authentication error:', error.response.data.message);
+        toast.error(error.response.data.message);
       }
+      
+      return Promise.reject(error);
     }
+    
     return Promise.reject(error);
   }
 );

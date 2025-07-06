@@ -191,7 +191,7 @@ const PsychologistCMS = () => {
       treatment_approaches: psychologist.treatment_approaches || [],
       image: null,
       currentImage: psychologist.image 
-        ? `http://localhost:8000/storage/${psychologist.image}`
+        ? `https://apihalosani.cloud/storage/${psychologist.image}`
         : '',
       is_verified: psychologist.is_verified
     });
@@ -617,7 +617,7 @@ const PsychologistCMS = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                          <img
                             src={psychologist.image 
-                                ? `http://localhost:8000/storage/${psychologist.image}`
+                                ? `https://apihalosani.cloud/storage/${psychologist.image}`
                                 : '/images/default-psychologist.jpg'}
                             alt={psychologist.name}
                             className="h-12 w-12 rounded-full object-cover"

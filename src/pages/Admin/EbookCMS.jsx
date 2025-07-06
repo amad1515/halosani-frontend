@@ -26,7 +26,7 @@ const EbookCMS = () => {
       // Format URL gambar
       const ebooksWithImageUrl = res.data.map(ebook => ({
         ...ebook,
-        imageUrl: ebook.image ? `http://localhost:8000/storage/${ebook.image}` : null
+        imageUrl: ebook.image ? `https://apihalosani.cloud/storage/${ebook.image}` : null
       }));
   
       setEbooks(ebooksWithImageUrl);

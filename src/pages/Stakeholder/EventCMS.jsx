@@ -26,7 +26,7 @@ const EventCMS = () => {
       // Tambahkan URL lengkap untuk gambar yang sudah ada
       const eventsWithImageUrl = res.data.map(event => ({
         ...event,
-        image: event.image ? `http://localhost:8000/storage/${event.image}` : null
+        image: event.image ? `https://apihalosani.cloud/storage/${event.image}` : null
       }));
       setEvents(eventsWithImageUrl);
     } catch (error) {

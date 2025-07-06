@@ -52,7 +52,7 @@ const Psychologists = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '/images/default-psychologist.jpg';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:8000/storage/${imagePath}`;
+    return `https://apihalosani.cloud/storage/${imagePath}`;
   };
 
   if (error) {

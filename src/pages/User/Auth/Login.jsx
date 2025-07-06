@@ -61,48 +61,58 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true); // Aktifkan indikator loading
 
-    try {
-      const response = await api.post('/login', formData);
-      
-      if (response.data.user_id) {
-        showSuccessNotification('Please verify your email to continue');
-        navigate('/user/verify-otp', { 
-          state: { 
-            userId: response.data.user_id, 
-            email: formData.email 
-          },
-          replace: true
-        });
-        return;
-      }
+  try {
+    const response = await api.post('/login', formData); // Kirim data login ke server
 
-      localStorage.setItem('user_token', response.data.token);
-      showSuccessNotification('Welcome back! We\'re glad to see you again ❤️');
-      navigate('/user/dashboard', { replace: true });
-    } catch (error) {
-      console.error('Login error:', error);
-      
-      let errorMessage = 'Login failed. Please try again.';
-      if (error.response) {
-        errorMessage = error.response.data.message || 
+    // Jika user_id ada, berarti akun belum diverifikasi
+    if (response.data.user_id) {
+      showSuccessNotification('Silakan verifikasi email Anda untuk melanjutkan');
+      navigate('/user/verify-otp', { 
+        state: { 
+          userId: response.data.user_id, 
+          email: formData.email 
+        },
+        replace: true
+      });
+      return;
+    }
+
+    // Pastikan token diterima dari server
+    if (!response.data.token) {
+      throw new Error('Token tidak diterima dari server');
+    }
+
+    // Simpan token ke localStorage
+    localStorage.setItem('user_token', response.data.token);
+    showSuccessNotification('Selamat datang kembali! Senang melihat Anda lagi ❤️');
+    navigate('/user/dashboard', { replace: true });
+  } catch (error) {
+    console.error('Kesalahan saat login:', error);
+    
+    let errorMessage = 'Login gagal. Silakan coba lagi.';
+    if (error.response) {
+      errorMessage = error.response.data.message || 
                      error.response.data.error || 
                      errorMessage;
-        
-        if (error.response.status === 401) {
-          errorMessage = 'Invalid credentials. Please check your email and password.';
-        } else if (error.response.status === 403) {
-          errorMessage = 'Account not verified. Please check your email for verification instructions.';
-        }
-      }
       
-      showErrorNotification(errorMessage);
-    } finally {
-      setLoading(false);
+      if (error.response.status === 401) {
+        errorMessage = 'Email atau kata sandi salah. Silakan periksa kembali.';
+      } else if (error.response.status === 403) {
+        errorMessage = 'Akun belum diverifikasi. Silakan cek email Anda untuk instruksi verifikasi.';
+      }
+    } else if (error.message === 'Token tidak diterima dari server') {
+      errorMessage = 'Kesalahan autentikasi. Silakan coba lagi.';
     }
-  };
+    
+    showErrorNotification(errorMessage);
+  } finally {
+    setLoading(false); // Matikan indikator loading
+  }
+};
+
 
   return (
     <motion.div 

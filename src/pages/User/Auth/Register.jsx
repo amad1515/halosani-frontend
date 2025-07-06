@@ -67,38 +67,54 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-  
-    try {
-      const response = await api.post('/register', formData);
-      showSuccessNotification(response.data.message || 'Registration successful! Welcome to our community ❤️');
-      
-      navigate('/user/verify-otp', { 
-        state: { 
-          userId: response.data.user_id, 
-          email: formData.email 
-        },
-        replace: true
-      });
-    } catch (error) {
-      console.error('Registration error:', error);
-      
-      const errorMessage = error.response?.data?.error 
-                        || error.response?.data?.message 
-                        || 'Registration failed. Please try again.';
-      
-      showErrorNotification(errorMessage);
-      
-      if (error.response?.data?.errors) {
-        Object.values(error.response.data.errors).forEach(err => {
-          showErrorNotification(err[0]);
-        });
-      }
-    } finally {
-      setLoading(false);
+  e.preventDefault(); // Mencegah reload halaman saat submit
+  setLoading(true); // Menampilkan loading
+
+  try {
+    const response = await api.post('/register', formData); // Kirim data pendaftaran ke server
+
+    // Pastikan user_id diterima sebelum melakukan navigasi
+    if (!response.data.user_id) {
+      throw new Error('Pendaftaran berhasil tetapi ID pengguna tidak diterima');
     }
-  };
+
+    // Tampilkan notifikasi sukses
+    showSuccessNotification(response.data.message || 'Pendaftaran berhasil! Selamat bergabung di komunitas kami ❤️');
+
+    // Arahkan ke halaman verifikasi OTP
+    navigate('/user/verify-otp', { 
+      state: { 
+        userId: response.data.user_id, 
+        email: formData.email 
+      },
+      replace: true
+    });
+  } catch (error) {
+    console.error('Kesalahan saat mendaftar:', error);
+
+    // Ambil pesan error dari respons server, jika ada
+    let errorMessage = error.response?.data?.error 
+                    || error.response?.data?.message 
+                    || 'Pendaftaran gagal. Silakan coba lagi.';
+
+    // Tangani kasus khusus jika user_id tidak diterima
+    if (error.message === 'Pendaftaran berhasil tetapi ID pengguna tidak diterima') {
+      errorMessage = 'Pendaftaran berhasil, tetapi verifikasi gagal. Silakan hubungi dukungan.';
+    }
+
+    showErrorNotification(errorMessage);
+
+    // Tampilkan pesan error validasi jika ada
+    if (error.response?.data?.errors) {
+      Object.values(error.response.data.errors).forEach(err => {
+        showErrorNotification(err[0]); // Tampilkan satu per satu
+      });
+    }
+  } finally {
+    setLoading(false); // Sembunyikan loading
+  }
+};
+
 
   return (
     <motion.div 

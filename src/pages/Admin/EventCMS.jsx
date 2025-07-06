@@ -24,6 +24,7 @@ const EventCMS = () => {
     setError(null);
     try {
       const res = await api.get('/admin/events');
+      // Use environment variable for base URL
       const baseUrl = process.env.REACT_APP_API_URL || 'https://apihalosani.cloud/';
       const eventsWithImageUrl = res.data.map(event => ({
         ...event,
@@ -189,20 +190,20 @@ const EventCMS = () => {
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
           onClick={toggleSidebar}
         ></div>
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:relative z-30 lg:z-0 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out`}>
+      <div className={`fixed md:relative z-30 md:z-0 w-72 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <Sidebar onLogout={handleLogout} />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-x-hidden">
+      <div className="flex-1 min-w-0">
         {/* Mobile Header */}
-        <div className="lg:hidden bg-white shadow-sm p-4 flex items-center sticky top-0 z-10">
+        <div className="md:hidden bg-white shadow-sm p-4 flex items-center">
           <button 
             onClick={toggleSidebar}
             className="mr-4 text-gray-500 hover:text-gray-700"
@@ -212,18 +213,18 @@ const EventCMS = () => {
             </svg>
           </button>
           <h1 className="text-xl font-bold text-gray-800">
-            {editingEvent ? 'Edit Event' : 'Manajemen Event'}
+            {editingEvent ? 'Edit Event' : 'Event Management'}
           </h1>
         </div>
 
-        <div className="p-4 lg:p-6">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-6">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-4 lg:mb-0">
+        <div className="p-4 md:p-8">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">
               {editingEvent ? 'Edit Event' : 'Buat Event Baru'}
             </h1>
             <button 
               onClick={() => navigate('/admin/event-cms')} 
-              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 transition duration-200 self-start lg:self-auto"
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 transition duration-200 self-start md:self-auto"
             >
               Kembali ke Daftar Event
             </button>
@@ -237,8 +238,8 @@ const EventCMS = () => {
           )}
 
           {/* Event Form */}
-          <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Title Field */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Judul Event*</label>
@@ -268,7 +269,7 @@ const EventCMS = () => {
               </div>
 
               {/* Description Field */}
-              <div className="lg:col-span-2">
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi*</label>
                 <textarea
                   name="description"
@@ -377,9 +378,9 @@ const EventCMS = () => {
           </form>
 
           {/* Events List */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="px-4 py-3 lg:px-6 lg:py-4 border-b border-gray-200 flex flex-col lg:flex-row justify-between items-start lg:items-center">
-              <h2 className="text-lg lg:text-xl font-semibold text-gray-800 mb-2 lg:mb-0">Semua Event</h2>
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-0">Semua Event</h2>
               <span className="text-sm text-gray-500">
                 {events.length} {events.length === 1 ? 'event' : 'event'} ditemukan
               </span>
@@ -403,7 +404,7 @@ const EventCMS = () => {
                       <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                         Tanggal
                       </th>
-                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                         Link
                       </th>
                       <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -429,7 +430,7 @@ const EventCMS = () => {
                           </td>
                           <td className="px-4 py-3">
                             <div className="text-sm font-medium text-gray-900">{event.title}</div>
-                            <div className="text-xs lg:text-sm text-gray-500 line-clamp-1">{event.description}</div>
+                            <div className="text-xs sm:text-sm text-gray-500 line-clamp-1">{event.description}</div>
                             <div className="text-xs text-gray-500 sm:hidden mt-1">
                               {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'Tidak ada tanggal'}
                             </div>
@@ -439,7 +440,7 @@ const EventCMS = () => {
                               {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'Tidak ada'}
                             </div>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap hidden lg:table-cell">
+                          <td className="px-4 py-3 whitespace-nowrap hidden md:table-cell">
                             {event.link ? (
                               <a 
                                 href={event.link} 

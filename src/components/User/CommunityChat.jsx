@@ -22,26 +22,9 @@ const db = getDatabase(app);
 
 // List of prohibited words (Indonesian and English)
 const BAD_WORDS = [
-  // Indonesia (ekspisit & slang)
-  'anjing', 'bangsat', 'bajingan', 'kontol', 'memek', 'jembut', 'ngentot', 'ngewe', 'pepek',
-  'pantek', 'puki', 'bego', 'goblok', 'idiot', 'tolol', 'kirek', 'jancok', 'jancuk',
-  'kampret', 'setan', 'keparat', 'brengsek', 'tai', 'taik', 'tahi', 'tol*l', 'gblk', 'bgtol',
-  'asu', 'kimak', 'kimak', 'sialan', 'cilaka', 'njir', 'njay', 'anjrit', 'anjay', 'anjg',
-
-  // Bahasa Indonesia ejaan variasi dan "sensor palsu"
-  'mem*k', 'k*nt*l', 'p*pek', 'g*blok', 'b*g*', 't*l*l', 'a**u', 'p*nt*k', 'b@ngsat',
-
-  // Inggris (ekspisit & variasi)
-  'fuck', 'fucked', 'fucker', 'fucking', 'shit', 'bullshit', 'ass', 'asshole',
-  'bitch', 'bastard', 'cunt', 'dick', 'pussy', 'motherfucker', 'slut', 'whore',
-  'dumbass', 'jackass', 'nigga', 'nigger', 'retard', 'retarded', 'fag', 'faggot',
-
-  // Inggris variasi simbol/sensor palsu
-  'f*ck', 's*it', 'sh*t', 'a**', 'b*tch', 'c*nt', 'd*ck', 'p*ssy', 'w*ore', 'sl*t',
-  'mf', 'wtf', 'stfu', 'omg', 'wth', 'lmao', 'lmfao', 'gtfo',
-
-  // Singkatan gaul kasar lokal
-  'anj', 'bgst', 'mmk', 'kntl', 'ngntt', 'pntk', 'bgsd', 'anjg', 'jmbt', 'sial'
+  'anjing', 'bangsat', 'bajingan', 'kontol', 'memek', 'jembut', 'ngentot', 'ngewe', 'pepek', 
+  'pantek', 'puki', 'bego', 'goblok', 'idiot', 'tolol', 'kirek', 'jancok', 'jancuk', 'fuck', 
+  'shit', 'asshole', 'bitch', 'cunt', 'dick', 'pussy', 'bastard', 'motherfucker', 'whore', 'slut'
 ];
 
 // Phone number and URL regex patterns
@@ -156,6 +139,8 @@ const CommunityChat = () => {
 
   // Enhanced content filtering
   const filterContent = (text) => {
+    if (!text) return text;
+    
     // Filter bad words
     let filteredText = text;
     BAD_WORDS.forEach(word => {
@@ -208,17 +193,22 @@ const CommunityChat = () => {
 
     const filteredMessage = filterContent(newMessage);
 
-    await push(ref(db, 'communityChat/messages'), {
-      text: filteredMessage,
-      username,
-      timestamp: serverTimestamp(),
-      userId: localStorage.getItem('chatUserId'),
-      isDeleted: false
-    });
+    try {
+      await push(ref(db, 'communityChat/messages'), {
+        text: filteredMessage,
+        username,
+        timestamp: serverTimestamp(),
+        userId: localStorage.getItem('chatUserId'),
+        isDeleted: false
+      });
 
-    setLastMessageTime(Date.now());
-    setNewMessage('');
-    inputRef.current?.focus();
+      setLastMessageTime(Date.now());
+      setNewMessage('');
+      inputRef.current?.focus();
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message');
+    }
   };
 
   // Unsend message

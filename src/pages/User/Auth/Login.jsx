@@ -61,48 +61,54 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const response = await api.post('/login', formData);
-      
-      if (response.data.user_id) {
-        showSuccessNotification('Please verify your email to continue');
-        navigate('/user/verify-otp', { 
-          state: { 
-            userId: response.data.user_id, 
-            email: formData.email 
-          },
-          replace: true
-        });
-        return;
-      }
-
-      localStorage.setItem('user_token', response.data.token);
-      showSuccessNotification('Welcome back! We\'re glad to see you again ❤️');
-      navigate('/user/dashboard', { replace: true });
-    } catch (error) {
-      console.error('Login error:', error);
-      
-      let errorMessage = 'Login failed. Please try again.';
-      if (error.response) {
-        errorMessage = error.response.data.message || 
-                     error.response.data.error || 
-                     errorMessage;
-        
-        if (error.response.status === 401) {
-          errorMessage = 'Invalid credentials. Please check your email and password.';
-        } else if (error.response.status === 403) {
-          errorMessage = 'Account not verified. Please check your email for verification instructions.';
-        }
-      }
-      
-      showErrorNotification(errorMessage);
-    } finally {
-      setLoading(false);
+  try {
+    const response = await api.post('/login', formData);
+    
+    if (response.data.user_id) {
+      showSuccessNotification('Please verify your email to continue');
+      navigate('/user/verify-otp', { 
+        state: { 
+          userId: response.data.user_id, 
+          email: formData.email 
+        },
+        replace: true
+      });
+      return;
     }
-  };
+
+    // Simpan token dan redirect
+    localStorage.setItem('user_token', response.data.token);
+    showSuccessNotification('Welcome back! We\'re glad to see you again ❤️');
+    
+    // Redirect dengan replace untuk mencegah kembali ke login
+    navigate('/user/dashboard', { replace: true });
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    
+    let errorMessage = 'Login failed. Please try again.';
+    if (error.response) {
+      errorMessage = error.response.data.message || 
+                   error.response.data.error || 
+                   errorMessage;
+      
+      if (error.response.status === 401) {
+        // Pastikan token dihapus jika ada
+        localStorage.removeItem('user_token');
+        errorMessage = 'Invalid credentials. Please check your email and password.';
+      } else if (error.response.status === 403) {
+        errorMessage = 'Account not verified. Please check your email for verification instructions.';
+      }
+    }
+    
+    showErrorNotification(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <motion.div 

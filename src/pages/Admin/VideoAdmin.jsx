@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from '../../components/Admin/Sidebar';
-// import MobileSidebarToggle from '../../components/Admin/MobileSidebarToggle';
 import api from '../../api/axios';
-import { FiSearch, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiClock, FiYoutube, FiFilter } from 'react-icons/fi';
+import { FiSearch, FiPlus, FiEdit2, FiTrash2, FiX, FiCheck, FiClock, FiYoutube, FiFilter, FiMenu } from 'react-icons/fi';
 import { FaYoutube } from 'react-icons/fa';
 
 const VideoAdmin = () => {
@@ -127,38 +126,38 @@ const VideoAdmin = () => {
   return (
     <div className="flex bg-gray-50 min-h-screen">
       {/* Sidebar Desktop - selalu terlihat di layar besar */}
-      <div className="hidden lg:block">
-        <Sidebar />
+      <div className={`fixed lg:static z-30 lg:z-auto transform transition-transform duration-300 ease-in-out 
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+        <Sidebar onClose={() => setIsSidebarOpen(false)} />
       </div>
       
-      {/* Toggle Sidebar Mobile */}
-      {/* <MobileSidebarToggle 
-        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-        isOpen={isSidebarOpen}
-      /> */}
-      
-      {/* Sidebar Mobile - ditampilkan secara kondisional */}
+      {/* Overlay untuk mobile sidebar */}
       {isSidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
-          <div 
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-          <div className="relative z-50 w-80 h-full bg-gradient-to-b from-indigo-900 to-purple-900 text-white p-6 shadow-2xl transform transition-transform duration-300">
-            <Sidebar isMobile={true} onClose={() => setIsSidebarOpen(false)} />
-          </div>
-        </div>
+        <div 
+          className="fixed inset-0 bg-black/50 lg:hidden z-20"
+          onClick={() => setIsSidebarOpen(false)}
+        />
       )}
 
       {/* Konten Utama */}
       <div className="flex-1 p-4 lg:p-8 lg:ml-64 transition-all duration-300">
         <div className="max-w-7xl mx-auto">
+          {/* Header dengan tombol hamburger untuk mobile */}
+          <div className="flex items-center justify-between lg:justify-start mb-6">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
+            >
+              <FiMenu className="w-6 h-6" />
+            </button>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 ml-2 lg:ml-0">Manajemen Video</h1>
+          </div>
+
           {/* Header dengan pencarian dan aksi */}
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Manajemen Video</h1>
-                <p className="text-gray-600 mt-1">Kelola dan atur konten video Anda</p>
+              <div className="w-full">
+                <p className="text-gray-600">Kelola dan atur konten video Anda</p>
               </div>
               
               <button
@@ -239,7 +238,7 @@ const VideoAdmin = () => {
                 </span>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {filteredVideos.map((video) => (
                   <div key={video.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col h-full border border-gray-200">
                     <div className="relative pt-[56.25%] bg-gray-100">
@@ -301,9 +300,9 @@ const VideoAdmin = () => {
         {isModalOpen && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold text-gray-800">
+              <div className="p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
                     {currentVideo ? 'Edit Video' : 'Tambah Video Baru'}
                   </h2>
                   <button
@@ -315,9 +314,9 @@ const VideoAdmin = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                  <div className="space-y-5">
+                  <div className="space-y-4 sm:space-y-5">
                     <div>
-                      <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         Judul <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -327,13 +326,13 @@ const VideoAdmin = () => {
                         value={formData.title}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
                         placeholder="Masukkan judul video"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="youtube_link" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="youtube_link" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         URL YouTube <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
@@ -348,11 +347,11 @@ const VideoAdmin = () => {
                           onChange={handleInputChange}
                           required
                           placeholder="https://www.youtube.com/watch?v=..."
-                          className="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                          className="w-full pl-10 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
                         />
                       </div>
                       {formData.youtube_link && (
-                        <div className="mt-2 text-xs text-gray-500">
+                        <div className="mt-1 sm:mt-2 text-xs text-gray-500">
                           Pratinjau: 
                           <a 
                             href={formData.youtube_link} 
@@ -367,7 +366,7 @@ const VideoAdmin = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         Deskripsi
                       </label>
                       <textarea
@@ -376,24 +375,24 @@ const VideoAdmin = () => {
                         value={formData.description}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
                         placeholder="Masukkan deskripsi video (opsional)"
                       />
                     </div>
                   </div>
 
-                  <div className="mt-8 flex justify-end gap-3 border-t border-gray-200 pt-5">
+                  <div className="mt-6 sm:mt-8 flex justify-end gap-3 border-t border-gray-200 pt-4 sm:pt-5">
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="px-4 sm:px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                     >
                       Batal
                     </button>
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-colors flex items-center gap-2 disabled:opacity-70"
+                      className="px-4 sm:px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-colors flex items-center gap-2 disabled:opacity-70"
                     >
                       {isSubmitting ? (
                         <>

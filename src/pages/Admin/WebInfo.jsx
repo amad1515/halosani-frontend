@@ -30,7 +30,7 @@ const WebInfoAdmin = () => {
       if (response.data.length > 0) {
         const info = {
           ...response.data[0],
-          imageUrl: response.data[0].image ? `http://localhost:8000/storage/${response.data[0].image}` : null
+          imageUrl: response.data[0].image ? `https://apihalosani.cloud/storage/${response.data[0].image}` : null
         };
         setWebInfo(info);
         reset(info);
@@ -98,7 +98,7 @@ const WebInfoAdmin = () => {
       // Update with new image URL
       const updatedInfo = {
         ...response.data,
-        imageUrl: response.data.image ? `http://localhost:8000/storage/${response.data.image}` : null
+        imageUrl: response.data.image ? `https://apihalosani.cloud/storage/${response.data.image}` : null
       };
       
       setWebInfo(updatedInfo);

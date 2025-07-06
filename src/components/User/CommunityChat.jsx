@@ -20,12 +20,35 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getDatabase(app);
 
-// List of prohibited words
+// List of prohibited words (Indonesian and English)
 const BAD_WORDS = [
-  // ... (keep your existing bad words list)
+  // Indonesia (ekspisit & slang)
+  'anjing', 'bangsat', 'bajingan', 'kontol', 'memek', 'jembut', 'ngentot', 'ngewe', 'pepek',
+  'pantek', 'puki', 'bego', 'goblok', 'idiot', 'tolol', 'kirek', 'jancok', 'jancuk',
+  'kampret', 'setan', 'keparat', 'brengsek', 'tai', 'taik', 'tahi', 'tol*l', 'gblk', 'bgtol',
+  'asu', 'kimak', 'kimak', 'sialan', 'cilaka', 'njir', 'njay', 'anjrit', 'anjay', 'anjg',
+
+  // Bahasa Indonesia ejaan variasi dan "sensor palsu"
+  'mem*k', 'k*nt*l', 'p*pek', 'g*blok', 'b*g*', 't*l*l', 'a**u', 'p*nt*k', 'b@ngsat',
+
+  // Inggris (ekspisit & variasi)
+  'fuck', 'fucked', 'fucker', 'fucking', 'shit', 'bullshit', 'ass', 'asshole',
+  'bitch', 'bastard', 'cunt', 'dick', 'pussy', 'motherfucker', 'slut', 'whore',
+  'dumbass', 'jackass', 'nigga', 'nigger', 'retard', 'retarded', 'fag', 'faggot',
+
+  // Inggris variasi simbol/sensor palsu
+  'f*ck', 's*it', 'sh*t', 'a**', 'b*tch', 'c*nt', 'd*ck', 'p*ssy', 'w*ore', 'sl*t',
+  'mf', 'wtf', 'stfu', 'omg', 'wth', 'lmao', 'lmfao', 'gtfo',
+
+  // Singkatan gaul kasar lokal
+  'anj', 'bgst', 'mmk', 'kntl', 'ngntt', 'pntk', 'bgsd', 'anjg', 'jmbt', 'sial'
 ];
 
-const MESSAGE_COOLDOWN = 30000; // 30 seconds cooldown between messages
+// Phone number and URL regex patterns
+const PHONE_REGEX = /(\+?\d{1,3}[- ]?)?\(?\d{2,3}\)?[- ]?\d{3,4}[- ]?\d{3,4}/g;
+const URL_REGEX = /(https?:\/\/|www\.)[^\s]+/gi;
+
+const MESSAGE_COOLDOWN = 10000; // Reduced to 10 seconds
 
 // Avatar colors and styles
 const AVATAR_COLORS = [
@@ -73,6 +96,16 @@ const CommunityChat = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Responsive width
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const chatWidth = windowWidth < 640 ? 'w-[calc(100%-3rem)]' : 'w-96';
+
   // Load user data from localStorage
   useEffect(() => {
     const storedUsername = localStorage.getItem('chatUsername') || 
@@ -93,7 +126,7 @@ const CommunityChat = () => {
           id: key,
           ...messagesData[key]
         }))
-        .filter(msg => !msg.isDeleted) // Filter out deleted messages
+        .filter(msg => !msg.isDeleted)
         .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
       
       setMessages(messagesList);
@@ -121,13 +154,21 @@ const CommunityChat = () => {
     return () => clearInterval(timer);
   }, [lastMessageTime]);
 
-  // Filter bad words
-  const filterBadWords = (text) => {
+  // Enhanced content filtering
+  const filterContent = (text) => {
+    // Filter bad words
     let filteredText = text;
     BAD_WORDS.forEach(word => {
       const regex = new RegExp(word, 'gi');
       filteredText = filteredText.replace(regex, '*'.repeat(word.length));
     });
+    
+    // Remove phone numbers
+    filteredText = filteredText.replace(PHONE_REGEX, '[phone number removed]');
+    
+    // Remove URLs
+    filteredText = filteredText.replace(URL_REGEX, '[link removed]');
+    
     return filteredText;
   };
 
@@ -165,7 +206,7 @@ const CommunityChat = () => {
       return;
     }
 
-    const filteredMessage = filterBadWords(newMessage);
+    const filteredMessage = filterContent(newMessage);
 
     await push(ref(db, 'communityChat/messages'), {
       text: filteredMessage,
@@ -199,7 +240,7 @@ const CommunityChat = () => {
   // Update username
   const updateUsername = () => {
     if (tempUsername.trim() && tempUsername !== username) {
-      const filteredUsername = filterBadWords(tempUsername);
+      const filteredUsername = filterContent(tempUsername);
       setUsername(filteredUsername);
       localStorage.setItem('chatUsername', filteredUsername);
       setEditingUsername(false);
@@ -266,7 +307,7 @@ const CommunityChat = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`fixed bottom-6 right-6 w-96 bg-white dark:bg-gray-800 rounded-t-xl shadow-xl z-50 flex flex-col overflow-hidden ${
+            className={`fixed bottom-6 right-6 ${chatWidth} bg-white dark:bg-gray-800 rounded-t-xl shadow-xl z-50 flex flex-col overflow-hidden ${
               isMinimized ? 'h-16' : 'h-[32rem]'
             }`}
           >
@@ -274,7 +315,7 @@ const CommunityChat = () => {
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 rounded-t-xl flex justify-between items-center">
               <div className="flex items-center">
                 <FiMessageSquare className="mr-2" />
-                <span className="font-medium">Chat Komunitas</span>
+                <span className="font-medium">Community Chat</span>
               </div>
               <div className="flex items-center space-x-2">
                 <button 

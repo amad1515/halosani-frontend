@@ -27,7 +27,7 @@ const WebInfoPage = () => {
         if (response.data.length > 0) {
           const info = response.data[0];
           if (info.image) {
-            info.imageUrl = `http://localhost:8000/storage/${info.image}`;
+            info.imageUrl = `https://apihalosani.cloud/storage/${info.image}`;
           }
           setWebInfo(info);
         }

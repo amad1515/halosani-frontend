@@ -25,7 +25,7 @@ const EventCMS = () => {
     try {
       const res = await api.get('/admin/events');
       // Use environment variable for base URL
-      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const baseUrl = process.env.REACT_APP_API_URL || 'https://apihalosani.cloud/';
       const eventsWithImageUrl = res.data.map(event => ({
         ...event,
         image: event.image ? `${baseUrl}/storage/${event.image}` : null

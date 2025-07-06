@@ -27,12 +27,24 @@ const Header = () => {
   }, []);
 
   // Handle logout
+  // Handle logout
   const handleLogout = () => {
-    localStorage.removeItem('user_token');
+    localStorage.removeItem('token'); // Ubah ini untuk konsisten dengan pengecekan login
     setIsLoggedIn(false);
     navigate('/user/login');
     if (isOpen) setIsOpen(false); // Close mobile menu if open
   };
+  
+  // Di bagian auth buttons desktop, ganti dengan:
+  {isLoggedIn && (
+  <button
+    onClick={handleLogout}
+    className="w-full flex items-center px-4 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 mt-2"
+  >
+    <span className="mr-3"><FiLogOut /></span>
+    Logout
+  </button>
+)}
 
   // Nav items
   const navItems = [

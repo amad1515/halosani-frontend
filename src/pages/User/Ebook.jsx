@@ -5,7 +5,7 @@ import api from '../../api/axios';
 import { FiSearch, FiBookOpen, FiDownload, FiClock } from 'react-icons/fi';
 
 // Define your API base URL here (you should get this from your environment configuration)
-const API_BASE_URL = 'http://localhost:8000'; // Replace with your actual API base URL
+const API_BASE_URL = 'https://apihalosani.cloud/'; // Replace with your actual API base URL
 
 const Ebook = () => {
   const [ebooks, setEbooks] = useState([]);

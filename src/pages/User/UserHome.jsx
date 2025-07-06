@@ -188,7 +188,7 @@ const UserHome = () => {
               image: event.image 
                 ? event.image.startsWith('http') 
                   ? event.image 
-                  : `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/storage/${event.image}`
+                  : `${process.env.REACT_APP_API_URL || 'https://apihalosani.cloud/'}/storage/${event.image}`
                 : null,
             }));
           setEvents(validatedEvents);
@@ -378,7 +378,7 @@ const UserHome = () => {
             const imageUrl = event.image 
               ? event.image.startsWith('http') 
                 ? event.image 
-                : `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/storage/${event.image}`
+                : `${process.env.REACT_APP_API_URL || 'https://apihalosani.cloud/'}/storage/${event.image}`
               : null;
 
             return (

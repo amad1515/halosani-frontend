@@ -237,14 +237,14 @@ const Header = () => {
                   </button>
                 </>
               ) : (
-                <Link
-                  to="/user/login"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  <span className="mr-3"><FiLogOut /></span>
-                  LogOut
-                </Link>
+                // <Link
+                //   to="/user/login"
+                //   onClick={() => setIsOpen(false)}
+                //   className="flex items-center px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                // >
+                //   <span className="mr-3"><FiLogOut /></span>
+                //   LogOut
+                // </Link>
               )}
             </motion.div>
           </div>

@@ -242,8 +242,8 @@ const Header = () => {
                   onClick={() => setIsOpen(false)}
                   className="flex items-center px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  <span className="mr-3"><FiLogIn /></span>
-                  Login
+                  <span className="mr-3"><FiLogOut /></span>
+                  LogOut
                 </Link>
               )}
             </motion.div>

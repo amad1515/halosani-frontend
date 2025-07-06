@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import Sidebar from '../../components/Admin/Sidebar';
-// import MobileSidebarToggle from '../../components/Admin/MobileSidebarToggle';
 
 const EventCMS = () => {
   const [events, setEvents] = useState([]);
@@ -17,6 +16,7 @@ const EventCMS = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchEvents = async () => {
@@ -24,10 +24,11 @@ const EventCMS = () => {
     setError(null);
     try {
       const res = await api.get('/admin/events');
-      // Tambahkan URL lengkap untuk gambar yang sudah ada
+      // Use environment variable for base URL
+      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
       const eventsWithImageUrl = res.data.map(event => ({
         ...event,
-        image: event.image ? `http://localhost:8000/storage/${event.image}` : null
+        image: event.image ? `${baseUrl}/storage/${event.image}` : null
       }));
       setEvents(eventsWithImageUrl);
     } catch (error) {
@@ -49,7 +50,6 @@ const EventCMS = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validasi gambar
       const validFormats = ['image/jpeg', 'image/png', 'image/jpg'];
       if (!validFormats.includes(file.type)) {
         setError('Harap unggah gambar yang valid (jpeg, png, jpg)');
@@ -93,7 +93,6 @@ const EventCMS = () => {
 
     try {
       if (editingEvent) {
-        // Untuk Laravel, gunakan POST dengan _method=PUT
         data.append('_method', 'PUT');
         await api.post(`/admin/events/${editingEvent.id}`, data, {
           headers: {
@@ -129,7 +128,7 @@ const EventCMS = () => {
       event_date: event.event_date || '',
       link: event.link || '',
       image: null,
-      currentImage: event.imageUrl || ''
+      currentImage: event.image || ''
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -178,106 +177,132 @@ const EventCMS = () => {
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
   return (
     <div className="flex bg-gray-50 min-h-screen">
-      {/* Sidebar Desktop */}
-      <Sidebar onLogout={handleLogout} />
-      
-      {/* Toggle Sidebar Mobile */}
-      {/* <MobileSidebarToggle onLogout={handleLogout} /> */}
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+          onClick={toggleSidebar}
+        ></div>
+      )}
 
-      {/* Konten Utama */}
-      <div className="flex-1 md:ml-72 p-4 md:p-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            {editingEvent ? 'Edit Event' : 'Buat Event Baru'}
-          </h1>
+      {/* Sidebar */}
+      <div className={`fixed md:relative z-30 md:z-0 w-72 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
+        <Sidebar onLogout={handleLogout} />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 min-w-0">
+        {/* Mobile Header */}
+        <div className="md:hidden bg-white shadow-sm p-4 flex items-center">
           <button 
-            onClick={() => navigate('/admin/event-cms')} 
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 transition duration-200"
+            onClick={toggleSidebar}
+            className="mr-4 text-gray-500 hover:text-gray-700"
           >
-            Kembali ke Daftar Event
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
           </button>
+          <h1 className="text-xl font-bold text-gray-800">
+            {editingEvent ? 'Edit Event' : 'Event Management'}
+          </h1>
         </div>
 
-        {/* Pesan Error */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
-            <p>{error}</p>
+        <div className="p-4 md:p-8">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">
+              {editingEvent ? 'Edit Event' : 'Buat Event Baru'}
+            </h1>
+            <button 
+              onClick={() => navigate('/admin/event-cms')} 
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 transition duration-200 self-start md:self-auto"
+            >
+              Kembali ke Daftar Event
+            </button>
           </div>
-        )}
 
-        {/* Form Event */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Field Judul */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Judul Event*</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Masukkan judul event"
-                required
-                disabled={isLoading}
-              />
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
+              <p>{error}</p>
             </div>
+          )}
 
-            {/* Field Tanggal */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Event</label>
-              <input
-                type="date"
-                name="event_date"
-                value={formData.event_date}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                disabled={isLoading}
-              />
-            </div>
+          {/* Event Form */}
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {/* Title Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Judul Event*</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Masukkan judul event"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
 
-            {/* Field Deskripsi */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi*</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Masukkan deskripsi event"
-                required
-                disabled={isLoading}
-              />
-            </div>
+              {/* Date Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Event</label>
+                <input
+                  type="date"
+                  name="event_date"
+                  value={formData.event_date}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  disabled={isLoading}
+                />
+              </div>
 
-            {/* Field Link */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Link Eksternal</label>
-              <input
-                type="url"
-                name="link"
-                value={formData.link}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://example.com"
-                disabled={isLoading}
-              />
-            </div>
+              {/* Description Field */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi*</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Masukkan deskripsi event"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
 
-            {/* Unggah Gambar */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {editingEvent ? 'Perbarui Gambar' : 'Unggah Gambar*'}
-              </label>
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex-1">
+              {/* Link Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Link Eksternal</label>
+                <input
+                  type="url"
+                  name="link"
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="https://example.com"
+                  disabled={isLoading}
+                />
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {editingEvent ? 'Perbarui Gambar' : 'Unggah Gambar*'}
+                </label>
+                <div className="flex flex-col gap-4">
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
                     <input
                       type="file"
@@ -297,10 +322,8 @@ const EventCMS = () => {
                       <span className="text-xs text-gray-500 mt-1">JPEG, PNG (Maks 2MB)</span>
                     </label>
                   </div>
-                </div>
-                
-                {formData.currentImage && (
-                  <div className="flex-1">
+                  
+                  {formData.currentImage && (
                     <div className="bg-gray-100 rounded-lg overflow-hidden">
                       <img 
                         src={formData.currentImage} 
@@ -315,149 +338,154 @@ const EventCMS = () => {
                         Gambar Saat Ini
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-6 flex justify-end space-x-3">
-            <button
-              type="button"
-              onClick={resetForm}
-              className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
-              disabled={isLoading}
-            >
-              Bersihkan Form
-            </button>
-            <button
-              type="submit"
-              className={`px-6 py-2.5 rounded-lg text-white transition flex items-center ${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Memproses...
-                </>
-              ) : (
-                <>
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                  </svg>
-                  {editingEvent ? 'Perbarui Event' : 'Buat Event'}
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-
-        {/* Daftar Event */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-800">Semua Event</h2>
-            <span className="text-sm text-gray-500">
-              {events.length} {events.length === 1 ? 'event' : 'event'} ditemukan
-            </span>
-          </div>
-          
-          {isLoading ? (
-            <div className="p-8 flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
+              <button
+                type="button"
+                onClick={resetForm}
+                className="px-4 sm:px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                disabled={isLoading}
+              >
+                Bersihkan Form
+              </button>
+              <button
+                type="submit"
+                className={`px-4 sm:px-6 py-2 rounded-lg text-white transition flex items-center justify-center ${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Memproses...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    {editingEvent ? 'Perbarui Event' : 'Buat Event'}
+                  </>
+                )}
+              </button>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Gambar
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Judul
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Tanggal
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Link
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Aksi
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {events.length > 0 ? (
-                    events.map(event => (
-                      <tr key={event.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                        {event.image && (
-                            <img
+          </form>
+
+          {/* Events List */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-0">Semua Event</h2>
+              <span className="text-sm text-gray-500">
+                {events.length} {events.length === 1 ? 'event' : 'event'} ditemukan
+              </span>
+            </div>
+            
+            {isLoading ? (
+              <div className="p-8 flex justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Gambar
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Judul
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                        Tanggal
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                        Link
+                      </th>
+                      <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {events.length > 0 ? (
+                      events.map(event => (
+                        <tr key={event.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            {event.image && (
+                              <img
                                 src={event.image}
                                 alt={event.title}
-                                className="h-12 w-16 object-cover rounded"
+                                className="h-10 w-14 object-cover rounded"
                                 onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/80'; // Gambar fallback
+                                  e.target.src = 'https://via.placeholder.com/80';
                                 }}
-                            />
+                              />
                             )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{event.title}</div>
-                          <div className="text-sm text-gray-500 line-clamp-1">{event.description}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'Tidak ada'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {event.link ? (
-                            <a 
-                              href={event.link} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-sm text-blue-600 hover:text-blue-900 truncate max-w-xs block"
-                            >
-                              {event.link}
-                            </a>
-                          ) : (
-                            <span className="text-sm text-gray-500">Tidak ada</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() => handleEdit(event)}
-                            className="text-blue-600 hover:text-blue-900 mr-4"
-                            disabled={isLoading}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(event.id)}
-                            className="text-red-600 hover:text-red-900"
-                            disabled={isLoading}
-                          >
-                            Hapus
-                          </button>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="text-sm font-medium text-gray-900">{event.title}</div>
+                            <div className="text-xs sm:text-sm text-gray-500 line-clamp-1">{event.description}</div>
+                            <div className="text-xs text-gray-500 sm:hidden mt-1">
+                              {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'Tidak ada tanggal'}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap hidden sm:table-cell">
+                            <div className="text-sm text-gray-900">
+                              {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'Tidak ada'}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap hidden md:table-cell">
+                            {event.link ? (
+                              <a 
+                                href={event.link} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:text-blue-900 truncate max-w-xs block"
+                              >
+                                {event.link}
+                              </a>
+                            ) : (
+                              <span className="text-sm text-gray-500">Tidak ada</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex justify-end space-x-2">
+                              <button
+                                onClick={() => handleEdit(event)}
+                                className="text-blue-600 hover:text-blue-900"
+                                disabled={isLoading}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(event.id)}
+                                className="text-red-600 hover:text-red-900"
+                                disabled={isLoading}
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
+                          Tidak ada event ditemukan. Buat event pertama Anda!
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
-                        Tidak ada event ditemukan. Buat event pertama Anda!
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -522,7 +522,7 @@ const UserHome = () => {
   ];
 
 return (
-  // <div className={`user-home ${darkMode ? 'white' : ''}`}>
+  <div className="user-home">
     <div className="container mx-auto px-4 py-8">
       {/* Welcome Header with Mood Tracker */}
       <motion.header 
@@ -563,7 +563,7 @@ return (
         </div> */}
       </motion.header>
       <motion.section
-          className="mb-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6"
+          className="mb-12 bg-white  rounded-xl shadow-sm p-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -647,35 +647,6 @@ return (
       {/* Main Content */}
       {activeTab === 'overview' && (
         <div className="main-content grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Activity */}
-          {/* <motion.section 
-            className="recent-activity lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
-              <FiCalendar className="mr-2" /> Recent Activity
-            </h2>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <motion.div 
-                  key={index}
-                  className="activity-item flex items-start p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  whileHover={{ x: 5 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                >
-                  <div className="activity-icon text-2xl mr-4">{activity.icon}</div>
-                  <div className="activity-details">
-                    <h4 className="font-medium text-gray-800 dark:text-white">{activity.title}</h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{activity.time}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section> */}
 
           {/* Wellness Tips */}
           <motion.section 

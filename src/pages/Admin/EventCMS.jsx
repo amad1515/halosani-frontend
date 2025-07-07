@@ -195,12 +195,12 @@ const EventCMS = () => {
       )}
 
       {/* Sidebar - Fixed height and sticky */}
-      <div className={`fixed md:sticky top-0 left-0 z-30 md:z-0 w-64 h-screen transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
+      <div className={`fixed md:relative z-30 md:z-0 w-64 h-screen transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <Sidebar onLogout={handleLogout} />
       </div>
 
       {/* Main Content - Adjusted for full height */}
-      <div className="flex-1 min-w-0 md:ml-64">
+      <div className="flex-1 min-w-0">
         {/* Mobile Header */}
         <div className="md:hidden bg-white shadow-sm p-4 flex items-center sticky top-0 z-10">
           <button 
@@ -216,8 +216,8 @@ const EventCMS = () => {
           </h1>
         </div>
 
-        <div className="p-4 md:p-8">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8">
+        <div className="p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">
               {editingEvent ? 'Edit Event' : 'Buat Event Baru'}
             </h1>
@@ -237,7 +237,7 @@ const EventCMS = () => {
           )}
 
           {/* Event Form */}
-          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
+          <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Title Field */}
               <div>
@@ -377,7 +377,7 @@ const EventCMS = () => {
           </form>
 
           {/* Events List */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-0">Semua Event</h2>
               <span className="text-sm text-gray-500">

@@ -61,7 +61,7 @@ const ActivityFrequencyChart = ({ activities }) => {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-gray-800 dark:text-white">
+          <span className="text-2xl font-bold text-gray-800">
             {Math.round((completedActivities / activities.length) * 100)}%
           </span>
         </div>
@@ -74,7 +74,7 @@ const ActivityFrequencyChart = ({ activities }) => {
 };
 const UserHome = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [darkMode, setDarkMode] = useState(false);
+  // const [darkMode, setDarkMode] = useState(false);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [breathingActive, setBreathingActive] = useState(false);
@@ -262,7 +262,7 @@ const UserHome = () => {
 
     return (
       <div className="mt-6">
-        <h3 className="font-medium text-gray-800 dark:text-white mb-3">
+        <h3 className="font-medium text-gray-800 mb-3">
           Your Mood This Week
         </h3>
         <div className="space-y-3">
@@ -288,7 +288,7 @@ const UserHome = () => {
               >
                 <span className="text-xl mr-3">{moodOptions.find(m => m.value === entry.mood)?.label.split(' ')[0]}</span>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-800 dark:text-white capitalize">
+                  <p className="font-medium text-gray-800 capitalize">
                     {entry.mood}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -408,7 +408,7 @@ const UserHome = () => {
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="font-bold text-lg text-gray-800 dark:text-white truncate">
+                  <h3 className="font-bold text-lg text-gray-800 truncate">
                     {event.title || 'Untitled Event'}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
@@ -531,7 +531,7 @@ return (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-2">
+        <h1 className="text-gray-800">
           Selamat Datang, <span className="text-blue-600 dark:text-blue-400">
             {userData?.name || userData?.username || userData?.email?.split('@')[0] || 'Friend'}
           </span>!
@@ -568,7 +568,7 @@ return (
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
             <FiCalendar className="mr-2" /> Acara Kesehatan Mendatang
           </h2>
           <EventCarousel />
@@ -581,7 +581,7 @@ return (
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Dashboard Kesehatan Mental Anda</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Kesehatan Mental Anda</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
             <motion.div 
@@ -604,7 +604,7 @@ return (
                   {stat.icon}
                 </div>
                 <div className="stat-content">
-                  <h3 className="text-2xl font-bold text-gray-800 dark:text-white">{stat.value}</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">{stat.value}</h3>
                   <p className="text-gray-600 dark:text-gray-300">{stat.label}</p>
                 </div>
               </div>
@@ -684,7 +684,7 @@ return (
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
                 <FiSun className="mr-2 text-yellow-500" /> Tips Kesehatan Mental
               </h2>
               
@@ -706,7 +706,7 @@ return (
                         {index + 1}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800 dark:text-white">{item.tip}</p>
+                        <p className="font-medium text-gray-800">{item.tip}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.manfaat}</p>
                       </div>
                     </div>
@@ -726,7 +726,7 @@ return (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
               <FiActivity className="mr-2" /> Latihan Pernafasan
             </h2>
             {!breathingActive ? (
@@ -792,7 +792,7 @@ return (
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">
                       {breathingPhase === 'inhale' ? 'Tarik Napas' : 
                        breathingPhase === 'hold' ? 'Tahan' : 'Hembuskan Perlahan'}
                     </h3>
@@ -838,7 +838,7 @@ return (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
               <FiHeart className="mr-2" /> Jurnal Syukur
 
             </h2>
@@ -869,7 +869,7 @@ return (
                     animate={{ opacity: 1 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <span className="text-gray-800 dark:text-white">• {item}</span>
+                    <span className="text-gray-800">• {item}</span>
                     <button
                       onClick={() => removeGratitudeItem(index)}
                       className="text-red-600 hover:text-red-800 dark:hover:text-red-400 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
@@ -892,7 +892,7 @@ return (
             transition={{ delay: 0.3 }}
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+              <h2 className="text-xl font-bold text-gray-800 flex items-center">
                 <FiBookOpen className="mr-2" /> Jurnal Pribadi
               </h2>
               <button
@@ -959,7 +959,7 @@ return (
                         })}
                       </span>
                     </div>
-                    <p className="text-gray-800 dark:text-white whitespace-pre-line">
+                    <p className="text-gray-800 whitespace-pre-line">
                       {entry.content}
                     </p>
                   </motion.div>
@@ -976,7 +976,7 @@ return (
 
 {activeTab === 'records' && (
   <div className="wellness-records bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6">
-    <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6 flex items-center">
+    <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center">
       <FiActivity className="mr-2" /> Catatan Kesehatan
     </h2>
     
@@ -984,7 +984,7 @@ return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       {/* Mood History - Improved with scrollable container */}
       <div className="bg-gray-50 dark:bg-gray-700 p-3 sm:p-4 rounded-lg flex flex-col">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-white mb-3 sm:mb-4 flex items-center">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center">
           <FiBarChart2 className="mr-2" /> Catatan Suasana Hati
         </h3>
         <div className="flex-1 min-h-0"> {/* This makes the chart container flexible */}
@@ -998,7 +998,7 @@ return (
       
       {/* Activity Frequency */}
       <div className="bg-gray-50 dark:bg-gray-700 p-3 sm:p-4 rounded-lg">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-white mb-3 sm:mb-4 flex items-center">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center">
           <FiPieChart className="mr-2" /> Frekuensi Aktivitas
         </h3>
         <div className="h-60 sm:h-64">

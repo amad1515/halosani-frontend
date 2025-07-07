@@ -24,7 +24,6 @@ const EventCMS = () => {
     setError(null);
     try {
       const res = await api.get('/admin/events');
-      // Use environment variable for base URL
       const baseUrl = process.env.REACT_APP_API_URL || 'https://apihalosani.cloud/';
       const eventsWithImageUrl = res.data.map(event => ({
         ...event,
@@ -195,15 +194,15 @@ const EventCMS = () => {
         ></div>
       )}
 
-      {/* Sidebar */}
-      <div className={`fixed md:relative z-30 md:z-0 w-72 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
+      {/* Sidebar - Fixed height and sticky */}
+      <div className={`fixed md:sticky top-0 left-0 z-30 md:z-0 w-64 h-screen transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <Sidebar onLogout={handleLogout} />
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 min-w-0">
+      {/* Main Content - Adjusted for full height */}
+      <div className="flex-1 min-w-0 md:ml-64">
         {/* Mobile Header */}
-        <div className="md:hidden bg-white shadow-sm p-4 flex items-center">
+        <div className="md:hidden bg-white shadow-sm p-4 flex items-center sticky top-0 z-10">
           <button 
             onClick={toggleSidebar}
             className="mr-4 text-gray-500 hover:text-gray-700"

@@ -224,14 +224,14 @@
 }
 
 /* Dark mode transitions */
-.dark .journal-entry {
+/* .dark .journal-entry {
   background-color: #2d3748;
   border-color: #4a5568;
 }
 
 .dark .gratitude-item {
   background-color: #2d3748;
-}
+} */
 
 /* Ensure stats cards are properly aligned */
 .stat-card {

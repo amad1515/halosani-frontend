@@ -522,7 +522,7 @@ const UserHome = () => {
   ];
 
 return (
-  <div className={`user-home ${darkMode ? 'white' : ''}`}>
+  // <div className={`user-home ${darkMode ? 'white' : ''}`}>
     <div className="container mx-auto px-4 py-8">
       {/* Welcome Header with Mood Tracker */}
       <motion.header 

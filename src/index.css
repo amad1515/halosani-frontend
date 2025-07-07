@@ -7,9 +7,8 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Light mode colors by default */
-  color-scheme: light dark;
-  color: #ffffff;
+  /* Hanya warna light mode */
+  color: #1a1a1a;
   background-color: #f8fafc; /* Light gray background */
 
   font-synthesis: none;
@@ -20,7 +19,7 @@
 
 /* Responsive base styles */
 body {
-  margin: 1;
+  margin: 0;
   min-width: 320px;
   min-height: 100vh;
   background-color: #f8fafc; /* Match the root background */
@@ -81,34 +80,6 @@ input, textarea, select {
   }
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #e2e8f0;
-    background-color: #0f172a; /* Dark slate background */
-  }
-
-  body {
-    background-color: #0f172a;
-  }
-
-  a {
-    @apply text-blue-400 hover:text-blue-300;
-  }
-
-  input, textarea, select {
-    @apply border-gray-600 bg-gray-700 text-white focus:border-blue-400 focus:ring-blue-400;
-  }
-
-  .btn-primary {
-    @apply bg-blue-700 hover:bg-blue-600;
-  }
-
-  .btn-secondary {
-    @apply bg-gray-700 text-gray-200 hover:bg-gray-600;
-  }
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -126,21 +97,6 @@ input, textarea, select {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
-}
-
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-track {
-    background: #1e293b;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #475569;
-  border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
-  }
 }
 
 /* Add this to your index.css or create a new CSS file */

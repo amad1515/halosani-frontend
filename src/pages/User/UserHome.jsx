@@ -74,7 +74,7 @@ const ActivityFrequencyChart = ({ activities }) => {
 };
 const UserHome = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [darkMode, setDarkMode] = useState(false);
+  // const [darkMode, setDarkMode] = useState(false);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [breathingActive, setBreathingActive] = useState(false);
@@ -522,7 +522,7 @@ const UserHome = () => {
   ];
 
 return (
-  <div className={`user-home ${darkMode ? 'dark' : ''}`}>
+  <div className={`user-home ${darkMode ? 'white' : ''}`}>
     <div className="container mx-auto px-4 py-8">
       {/* Welcome Header with Mood Tracker */}
       <motion.header 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import Sidebar from '../../components/Admin/Sidebar';
-// import MobileSidebarToggle from '../../components/Admin/MobileSidebarToggle';
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -40,7 +39,6 @@ const BlogPage = () => {
 
     const formData = new FormData();
     formData.append('title', newBlog.title);
-    // Mempertahankan line breaks dalam deskripsi
     formData.append('description', newBlog.description.replace(/\n/g, '<br>'));
     formData.append('image', newBlog.image);
 
@@ -103,22 +101,25 @@ const BlogPage = () => {
     navigate('/admin/login');
   };
 
-  // Format deskripsi untuk mempertahankan line breaks
   const formatDescription = (text) => {
     if (!text) return '';
     return text.replace(/<br\s*\/?>/gi, '\n');
   };
 
+  // Function to get full image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    // Check if it's already a full URL (from the API)
+    if (imagePath.startsWith('http')) return imagePath;
+    // Otherwise construct the URL from the public path
+    return `${window.location.origin}/${imagePath}`;
+  };
+
   return (
     <div className="flex bg-gray-50 min-h-screen">
-    {/* Sidebar Desktop */}
-    <Sidebar onLogout={handleLogout} />
-    
-    {/* Toggle Sidebar Mobile */}
-    {/* <MobileSidebarToggle onLogout={handleLogout} /> */}
-      {/* Area Konten Utama */}
+      <Sidebar onLogout={handleLogout} />
+      
       <div className="flex-1 md:ml-20 lg:ml-64 flex flex-col min-h-screen">
-        {/* Area Konten yang Dapat Digulir */}
         <div className="flex-1 overflow-y-auto">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="space-y-6">
@@ -283,15 +284,14 @@ const BlogPage = () => {
                               </span>
                             </div>
                             
-                            {/* Deskripsi yang diformat dengan line breaks yang dipertahankan */}
                             <div className="mt-3 text-gray-600 whitespace-pre-line">
                               {formatDescription(blog.description)}
                             </div>
                             
-                            {blog.image_url && (
+                            {blog.image && (
                               <div className="mt-4">
                                 <img
-                                  src={blog.image_url}
+                                  src={getImageUrl(blog.image)}
                                   alt={blog.title}
                                   className="w-full h-48 object-cover rounded-lg border border-gray-200"
                                   onError={(e) => {

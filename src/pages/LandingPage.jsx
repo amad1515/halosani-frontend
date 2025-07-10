@@ -3,36 +3,72 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FiMenu, FiX, FiArrowRight, FiChevronDown } from 'react-icons/fi';
-import { FaInstagram, FaTwitter, FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
+import { FaInstagram, FaTwitter, FaFacebookF, FaLinkedinIn, FaHeart, FaShieldAlt, FaClock } from 'react-icons/fa';
+import { RiMentalHealthLine, RiChatQuoteLine, RiTeamLine, RiBarChartLine } from 'react-icons/ri';
+import { IoMdNotifications } from 'react-icons/io';
 import './LandingPage.css';
 import halosanilan from '../assets/halosani_lan.png';
 
-// Particle component yang dioptimasi
+// Enhanced Particle component with more dynamic behavior
 const Particle = ({ index, isMobile }) => {
-  const size = Math.random() * (isMobile ? 5 : 10) + 3;
+  const size = Math.random() * (isMobile ? 8 : 15) + 5;
+  const duration = Math.random() * 15 + 15;
+  
   return (
     <motion.div
       className="particle"
       initial={{ opacity: 0 }}
       animate={{
-        opacity: [0, 0.6, 0],
-        x: [0, Math.random() * 100 - 50],
-        y: [0, Math.random() * 100 - 50]
+        opacity: [0, 0.8, 0],
+        x: [0, Math.random() * 200 - 100],
+        y: [0, Math.random() * 200 - 100],
+        scale: [1, 1.2, 1]
       }}
       transition={{
-        duration: Math.random() * 10 + 10,
+        duration: duration,
         repeat: Infinity,
         repeatType: 'reverse',
-        delay: index * 0.2
+        delay: index * 0.1,
+        ease: "easeInOut"
       }}
       style={{
         left: `${Math.random() * 100}%`,
         top: `${Math.random() * 100}%`,
         width: `${size}px`,
         height: `${size}px`,
-        background: `hsla(${Math.random() * 60 + 200}, 70%, 60%, 0.7)`
+        background: `hsla(${Math.random() * 60 + 200}, 80%, 70%, 0.8)`,
+        borderRadius: size > 10 ? '50%' : '30%'
       }}
     />
+  );
+};
+
+// Floating Emoji component for hero section
+const FloatingEmoji = ({ emoji, size, duration, delay, xRange, yRange }) => {
+  return (
+    <motion.div
+      className="floating-emoji"
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: [0.6, 1, 0.6],
+        x: [0, xRange, 0],
+        y: [0, yRange, 0],
+        rotate: [0, 15, 0]
+      }}
+      transition={{
+        duration: duration,
+        repeat: Infinity,
+        repeatType: 'reverse',
+        delay: delay,
+        ease: "easeInOut"
+      }}
+      style={{
+        fontSize: `${size}px`,
+        filter: 'drop-shadow(0 5px 15px rgba(0,0,0,0.1))'
+      }}
+    >
+      {emoji}
+    </motion.div>
   );
 };
 
@@ -43,13 +79,24 @@ const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
+    
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -70,6 +117,7 @@ const LandingPage = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -106,6 +154,30 @@ const LandingPage = () => {
     }
   };
 
+  const slideInFromLeft = {
+    hidden: { x: -100, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const slideInFromRight = {
+    hidden: { x: 100, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
   const navItems = [
     { 
       label: 'Fitur', 
@@ -121,22 +193,102 @@ const LandingPage = () => {
     }
   ];
 
+  // Data for stats, features, and testimonials
+  const stats = [
+    { number: "100%", label: "Gratis", icon: <FaHeart className="stat-icon" /> },
+    { number: "100%", label: "Privasi Terjaga", icon: <FaShieldAlt className="stat-icon" /> },
+    { number: "24/7", label: "Dukungan", icon: <FaClock className="stat-icon" /> }
+  ];
+
+  const features = [
+    {
+      icon: <RiMentalHealthLine className="feature-icon-svg" />,
+      title: "Konseling Profesional",
+      description: "Akses ke psikolog dan konselor berpengalaman untuk dukungan kesehatan mental pribadi."
+    },
+    {
+      icon: <RiChatQuoteLine className="feature-icon-svg" />,
+      title: "Komunitas Supportif",
+      description: "Bergabung dengan komunitas yang memahami dan saling mendukung perjalanan kesehatan mental."
+    },
+    {
+      icon: <IoMdNotifications className="feature-icon-svg" />,
+      title: "Pengingat Kesehatan",
+      description: "Fitur pengingat untuk meditasi, minum obat, dan aktivitas perawatan diri lainnya."
+    },
+    {
+      icon: <RiTeamLine className="feature-icon-svg" />,
+      title: "Grup Dukungan",
+      description: "Sesi grup dengan profesional dan anggota komunitas untuk berbagi pengalaman."
+    },
+    {
+      icon: <RiBarChartLine className="feature-icon-svg" />,
+      title: "Pelacakan Mood",
+      description: "Pantau perubahan mood dan emosi Anda dengan alat pelacakan yang mudah digunakan."
+    }
+  ];
+
+  const testimonials = [
+    {
+      quote: "Halosani membantu saya melalui masa sulit. Konselornya sangat pengertian dan alat pelacakan mood sangat berguna.",
+      name: "Dewi Anggraeni",
+      role: "Pengguna sejak 2022",
+      avatar: "🙂"
+    },
+    {
+      quote: "Sebagai mahasiswa dengan tekanan tinggi, Halosani menjadi tempat saya berbagi dan menemukan solusi.",
+      name: "Budi Santoso",
+      role: "Mahasiswa",
+      avatar: "😊"
+    },
+    {
+      quote: "Komunitasnya sangat suportif. Saya tidak merasa sendirian lagi dalam perjalanan kesehatan mental saya.",
+      name: "Anita Permata",
+      role: "Ibu Rumah Tangga",
+      avatar: "😌"
+    }
+  ];
+
   return (
     <div className="halosani-landing">
-      {/* Animated Gradient Background */}
+      {/* Enhanced Animated Gradient Background */}
       <motion.div 
         className="gradient-bg"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5 }}
+        animate={{ 
+          opacity: 1,
+          backgroundPosition: ['0% 50%', '100% 50%']
+        }}
+        transition={{ 
+          duration: 15,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'linear'
+        }}
       />
       
       {/* Optimized Floating Particles */}
       <div className="particles-container">
-        {[...Array(isMobile ? 15 : 30)].map((_, i) => (
+        {[...Array(isMobile ? 20 : 40)].map((_, i) => (
           <Particle key={i} index={i} isMobile={isMobile} />
         ))}
       </div>
+
+      {/* Parallax Background Elements */}
+      <motion.div 
+        className="parallax-circle circle-1"
+        animate={{
+          y: scrollY * 0.1,
+          x: scrollY * 0.05
+        }}
+      />
+      <motion.div 
+        className="parallax-circle circle-2"
+        animate={{
+          y: scrollY * 0.15,
+          x: -scrollY * 0.05
+        }}
+      />
 
       {/* Mobile Navigation */}
       <motion.nav 
@@ -144,6 +296,10 @@ const LandingPage = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
+        style={{
+          backgroundColor: scrollY > 50 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.8)',
+          boxShadow: scrollY > 50 ? '0 2px 20px rgba(0,0,0,0.1)' : 'none'
+        }}
       >
         <motion.div 
           className="navbar-brand"
@@ -205,10 +361,34 @@ const LandingPage = () => {
               </div>
               
               <div className="mobile-social-links">
-                <a href="#"><FaInstagram size={20} /></a>
-                <a href="#"><FaTwitter size={20} /></a>
-                <a href="#"><FaFacebookF size={20} /></a>
-                <a href="#"><FaLinkedinIn size={20} /></a>
+                <motion.a 
+                  href="#" 
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FaInstagram size={20} />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FaTwitter size={20} />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FaFacebookF size={20} />
+                </motion.a>
+                <motion.a 
+                  href="#" 
+                  whileHover={{ y: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FaLinkedinIn size={20} />
+                </motion.a>
               </div>
             </motion.div>
           </motion.div>
@@ -221,6 +401,10 @@ const LandingPage = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
+        style={{
+          backgroundColor: scrollY > 50 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.8)',
+          boxShadow: scrollY > 50 ? '0 2px 20px rgba(0,0,0,0.1)' : 'none'
+        }}
       >
         <motion.div 
           className="logo"
@@ -311,7 +495,11 @@ const LandingPage = () => {
             <motion.div 
               className="phone-mockup"
               initial={{ rotate: -5, scale: 0.9 }}
-              animate={{ rotate: 5, scale: 1 }}
+              animate={{ 
+                rotate: [0, 5, 0],
+                y: [0, -15, 0],
+                scale: [1, 1.02, 1]
+              }}
               transition={{
                 duration: 8,
                 repeat: Infinity,
@@ -327,50 +515,38 @@ const LandingPage = () => {
               />
             </motion.div>
             <div className="floating-elements">
-              <motion.div 
-                className="floating-element element-1"
-                animate={{
-                  y: [0, -25, 0],
-                  rotate: [0, 5, 0]
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                🧘‍♀️
-              </motion.div>
-              <motion.div 
-                className="floating-element element-2"
-                animate={{
-                  y: [0, 20, 0],
-                  rotate: [0, -5, 0]
-                }}
-                transition={{
-                  duration: 7,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5
-                }}
-              >
-                😌
-              </motion.div>
-              <motion.div 
-                className="floating-element element-3"
-                animate={{
-                  y: [0, -15, 0],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1
-                }}
-              >
-                🌱
-              </motion.div>
+              <FloatingEmoji 
+                emoji="🧘‍♀️" 
+                size={isMobile ? 40 : 60}
+                duration={8}
+                delay={0}
+                xRange={20}
+                yRange={-30}
+              />
+              <FloatingEmoji 
+                emoji="😌" 
+                size={isMobile ? 30 : 50}
+                duration={7}
+                delay={0.5}
+                xRange={-15}
+                yRange={25}
+              />
+              <FloatingEmoji 
+                emoji="🌱" 
+                size={isMobile ? 35 : 55}
+                duration={6}
+                delay={1}
+                xRange={10}
+                yRange={-20}
+              />
+              <FloatingEmoji 
+                emoji="✨" 
+                size={isMobile ? 25 : 40}
+                duration={5}
+                delay={1.5}
+                xRange={-25}
+                yRange={15}
+              />
             </div>
           </motion.div>
         </div>
@@ -415,8 +591,8 @@ const LandingPage = () => {
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <motion.h3 
-                className="stat-number"
+              <motion.div 
+                className="stat-icon-container"
                 initial={{ scale: 0.8 }}
                 whileInView={{ scale: 1 }}
                 transition={{ 
@@ -427,10 +603,31 @@ const LandingPage = () => {
                 }}
                 viewport={{ once: true }}
               >
+                {stat.icon}
+              </motion.div>
+              <motion.h3 
+                className="stat-number"
+                initial={{ scale: 0.8 }}
+                whileInView={{ scale: 1 }}
+                transition={{ 
+                  type: 'spring',
+                  stiffness: 200,
+                  damping: 10,
+                  delay: index * 0.1 + 0.1
+                }}
+                viewport={{ once: true }}
+              >
                 {stat.number}
               </motion.h3>
-              <p className="stat-label">{stat.label}</p>
-              <div className="stat-icon">{stat.icon}</div>
+              <motion.p 
+                className="stat-label"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: index * 0.1 + 0.2 }}
+                viewport={{ once: true }}
+              >
+                {stat.label}
+              </motion.p>
             </motion.div>
           ))}
         </div>
@@ -540,11 +737,13 @@ const LandingPage = () => {
           
           <div className="testimonial-dots">
             {testimonials.map((_, index) => (
-              <button
+              <motion.button
                 key={index}
                 className={`dot ${index === activeTestimonial ? 'active' : ''}`}
                 onClick={() => setActiveTestimonial(index)}
                 aria-label={`Testimonial ${index + 1}`}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
               />
             ))}
           </div>
@@ -619,10 +818,38 @@ const LandingPage = () => {
           <div className="footer-social">
             <h4>Ikuti Kami</h4>
             <div className="social-icons">
-              <a href="#" aria-label="Instagram"><FaInstagram size={20} /></a>
-              <a href="#" aria-label="Twitter"><FaTwitter size={20} /></a>
-              <a href="#" aria-label="Facebook"><FaFacebookF size={20} /></a>
-              <a href="#" aria-label="LinkedIn"><FaLinkedinIn size={20} /></a>
+              <motion.a 
+                href="#" 
+                aria-label="Instagram"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FaInstagram size={20} />
+              </motion.a>
+              <motion.a 
+                href="#" 
+                aria-label="Twitter"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FaTwitter size={20} />
+              </motion.a>
+              <motion.a 
+                href="#" 
+                aria-label="Facebook"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FaFacebookF size={20} />
+              </motion.a>
+              <motion.a 
+                href="#" 
+                aria-label="LinkedIn"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FaLinkedinIn size={20} />
+              </motion.a>
             </div>
           </div>
         </div>
@@ -633,10 +860,7 @@ const LandingPage = () => {
       </footer>
     </div>
   );
-};
-
-// Data dummy (tetap sama seperti sebelumnya)
-const stats = [
+  const stats = [
   { number: "100%", label: "Gratis", icon: "👥" },
   { number: "100%", label: "Privasi Terjaga", icon: "🔒" },
   { number: "24/7", label: "Dukungan", icon: "⏰" }
@@ -696,4 +920,6 @@ const testimonials = [
     role: "Karyawan, 21 tahun"
   }
 ];
+};
+
 export default LandingPage;

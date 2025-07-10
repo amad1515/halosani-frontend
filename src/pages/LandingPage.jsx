@@ -499,7 +499,34 @@ const LandingPage = () => {
             </motion.div>
           ))}
         </div>
-</section>
+        <div className="features-decorative-elements">
+          <motion.div 
+            className="decorative-circle circle-1"
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.6, 1, 0.6]
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="decorative-circle circle-2"
+            animate={{
+              y: [0, 15, 0],
+              opacity: [0.4, 0.8, 0.4]
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          />
+        </div>
+      </section>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials-section">

@@ -139,7 +139,7 @@ const Footer = () => {
           >
             <h3 className="text-xl font-bold mb-6 flex items-center">
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
-                Ada Laporan?
+                Kirim Laporan Anda
               </span>
             </h3>
             

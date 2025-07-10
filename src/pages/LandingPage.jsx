@@ -438,95 +438,21 @@ const LandingPage = () => {
 
       {/* Features Section */}
       <section id="features" className="features-section">
-        <motion.div 
-          className="section-header"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            Teman Edukasi Kesehatan Mental Anda
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            Fitur-fitur komprehensif yang dirancang untuk mendukung perjalanan kesehatan Anda
-          </motion.p>
-        </motion.div>
+  <div className="section-header">
+    <h2>Teman Edukasi Kesehatan Mental Anda</h2>
+    <p>Fitur-fitur komprehensif yang dirancang untuk mendukung perjalanan kesehatan Anda</p>
+  </div>
 
-        <div className="features-grid">
-          {features.map((feature, index) => (
-            <motion.div 
-              key={index}
-              className="feature-card"
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ 
-                duration: 0.6, 
-                delay: index * 0.1,
-                type: 'spring',
-                stiffness: 100
-              }}
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{ 
-                y: -10,
-                boxShadow: '0 20px 40px -15px rgba(99, 102, 241, 0.3)'
-              }}
-            >
-              <motion.div 
-                className="feature-icon"
-                whileHover={{ scale: 1.1 }}
-              >
-                {feature.icon}
-              </motion.div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-              <motion.div 
-                className="feature-hover-bg"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileHover={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
-          ))}
-        </div>
-        <div className="features-decorative-elements">
-          <motion.div 
-            className="decorative-circle circle-1"
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.6, 1, 0.6]
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-          <motion.div 
-            className="decorative-circle circle-2"
-            animate={{
-              y: [0, 15, 0],
-              opacity: [0.4, 0.8, 0.4]
-            }}
-            transition={{
-              duration: 7,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.5
-            }}
-          />
-        </div>
-      </section>
+  <div className="features-grid">
+    {features.map((feature, index) => (
+      <div key={index} className="feature-card">
+        <div className="feature-icon">{feature.icon}</div>
+        <h3>{feature.title}</h3>
+        <p>{feature.description}</p>
+      </div>
+    ))}
+  </div>
+</section>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials-section">

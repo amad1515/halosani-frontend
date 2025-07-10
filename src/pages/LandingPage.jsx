@@ -860,7 +860,9 @@ const LandingPage = () => {
       </footer>
     </div>
   );
-  const stats = [
+};
+
+const stats = [
   { number: "100%", label: "Gratis", icon: "👥" },
   { number: "100%", label: "Privasi Terjaga", icon: "🔒" },
   { number: "24/7", label: "Dukungan", icon: "⏰" }
@@ -920,6 +922,5 @@ const testimonials = [
     role: "Karyawan, 21 tahun"
   }
 ];
-};
 
 export default LandingPage;

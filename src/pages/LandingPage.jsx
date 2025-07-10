@@ -499,7 +499,7 @@ const LandingPage = () => {
             </motion.div>
           ))}
         </div>
-      </section>
+</section>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="testimonials-section">

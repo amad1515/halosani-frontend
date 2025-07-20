@@ -92,7 +92,9 @@ const Footer = () => {
         { name: 'Video', url: 'user/videos' },
         { name: 'Mentor AI', url: 'https://www.apa.org/practice/artificial-intelligence-mental-health-care' },
         { name: 'FAQ', url: 'user/f&q' },
-        { name: 'Info Profesional', url: 'user/infopsikolog' }
+        { name: 'Info Profesional', url: 'user/infopsikolog' },
+        { name: 'Info Profile', url: 'user/profile' }
+
 
 
       ]

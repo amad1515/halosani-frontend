@@ -44,6 +44,7 @@ import Freq from './pages/User/Freq';
 import OurTeam from './pages/User/OurTeam';
 import Feedback from './pages/User/Feedback';
 import Psychologists from './pages/User/Psychologists';
+import ProfilePage from './pages/User/Profile/ProfilePage';
 
 
 
@@ -90,7 +91,9 @@ const App = () => {
 
         {/* Protected User Routes with Header + Footer */}
         <Route element={<UserProtectedRoute />}>
+
           <Route path="/user/dashboard" element={<UserHome />} />
+          <Route path="/user/profile" element={<ProfilePage />} />
           <Route path="/user/blogs" element={<Blog />} />
           <Route path="/user/blogs/:id" element={<BlogDetail />} />
           <Route path="/user/webinfopage" element={<WebInfoPage />} />

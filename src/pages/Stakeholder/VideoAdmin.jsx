@@ -118,6 +118,11 @@ const VideoAdmin = () => {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    navigate('/stakeholder/login');
+  };
+
   // Filter video berdasarkan kata kunci pencarian
   const filteredVideos = videos.filter(video =>
     video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -127,9 +132,8 @@ const VideoAdmin = () => {
   return (
     <div className="flex bg-gray-50 min-h-screen">
       {/* Sidebar Desktop - selalu terlihat di layar besar */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+      <Sidebar onLogout={handleLogout} />
+
       
       {/* Toggle Sidebar Mobile */}
       {/* <MobileSidebarToggle 

@@ -124,7 +124,7 @@ const ProfilePage = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-1">Jenis Kelamin</label>
                     <p className="text-gray-900 capitalize">
-                      {formData.gender === 'male' ? 'Pria' : formData.gender === 'female' ? 'Wanita' : 'Lainnya'}
+                      {formData.gender === 'male' ? 'Pria' : formData.gender === 'female' ? 'Wanita' }
                     </p>
                   </div>
                   <div>
@@ -195,7 +195,6 @@ const ProfilePage = () => {
                     >
                       <option value="male">Pria</option>
                       <option value="female">Wanita</option>
-                      <option value="other">Lainnya</option>
                     </select>
                   </div>
 

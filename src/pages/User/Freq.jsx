@@ -29,8 +29,8 @@ const Freq = () => {
       color: "bg-gradient-to-br from-emerald-600 to-teal-700"
     },
     {
-      question: "Apakah curhat di jurnal harian akan hilang setelah di refresh?",
-      answer: "Ya, fitur jurnal harian di HaloSani dirancang sebagai 'jurnal ephemeral' yang akan hilang setelah Anda refresh atau tutup aplikasi. Ini bertujuan memberi Anda kebebasan untuk mengekspresikan perasaan tanpa khawatir tentang penyimpanan permanen. Namun, kami menyediakan opsi ekspor manual jika Anda ingin menyimpan entri tertentu.",
+      question: "Apakah curhat di jurnal harian akan hilang dalam beberapa hari?",
+      answer: "Ya, fitur jurnal harian di HaloSani dirancang sebagai 'jurnal ephemeral' yang akan hilang setelah 7 hari. Ini bertujuan memberi Anda kebebasan untuk mengekspresikan perasaan tanpa khawatir tentang penyimpanan permanen. Namun, kami menyediakan opsi ekspor manual jika Anda ingin menyimpan entri tertentu.",
       icon: <FaBook />,
       color: "bg-gradient-to-br from-amber-600 to-yellow-600"
     },

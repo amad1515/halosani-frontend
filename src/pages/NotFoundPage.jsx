@@ -62,11 +62,11 @@ const NotFoundPage = () => {
           className="relative mb-8"
         >
           <div className="text-[180px] md:text-[220px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 opacity-20">
-            500
+            404
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-8xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-800">
-              500
+              404
             </div>
           </div>
         </motion.div>
@@ -75,14 +75,14 @@ const NotFoundPage = () => {
           variants={itemVariants}
           className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
         >
-          Terjadi Kesalahan
+          Halaman Tidak Ditemukan
         </motion.h1>
 
         <motion.p 
           variants={itemVariants}
           className="text-lg md:text-xl text-gray-600 mb-8"
         >
-          Maaf, sepertinya terjadi kesalahan silahkan kembali.
+          Maaf, sepertinya halaman yang Anda cari sudah tidak ada atau dipindahkan.
         </motion.p>
 
         <motion.div

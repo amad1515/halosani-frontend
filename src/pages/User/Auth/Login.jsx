@@ -42,23 +42,42 @@ const Login = () => {
   };
 
   const showErrorNotification = (message) => {
-    toast.error(message, {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      style: {
-        background: '#F44336',
-        color: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-      }
-    });
-  };
+  toast.error(message, {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    transition: toast.flip,
+    style: {
+      background: '#FF3B30',
+      color: 'white',
+      borderRadius: '12px',
+      boxShadow: '0 4px 12px rgba(255,59,48,0.2)',
+      borderLeft: '4px solid #FF9500',
+      padding: '16px 24px',
+      fontSize: '14px',
+      fontWeight: '500'
+    },
+    icon: (
+      <div style={{
+        background: '#FF9500',
+        borderRadius: '50%',
+        width: '24px',
+        height: '24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white'
+      }}>
+        <FiLock size={14} />
+      </div>
+    )
+  });
+};
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -90,18 +109,16 @@ const Login = () => {
     console.error('Login error:', error);
     
     let errorMessage = 'Login failed. Please try again.';
-    if (error.response) {
-      errorMessage = error.response.data.message || 
-                   error.response.data.error || 
-                   errorMessage;
-      
-      if (error.response.status === 401) {
-        // Pastikan token dihapus jika ada
-        localStorage.removeItem('user_token');
-        errorMessage = 'Invalid credentials. Please check your email and password.';
-      } else if (error.response.status === 403) {
-        errorMessage = 'Account not verified. Please check your email for verification instructions.';
-      }
+    if (error.response.status === 401) {
+      localStorage.removeItem('user_token');
+      showErrorNotification(
+        <div>
+          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Kombinasi Tidak Sesuai</div>
+          <div style={{ opacity: 0.9 }}>
+            Email atau password yang Anda masukkan tidak sesuai. Silakan coba lagi atau reset password Anda.
+          </div>
+        </div>
+      );
     }
     
     showErrorNotification(errorMessage);

@@ -113,6 +113,11 @@ const WebInfoAdmin = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    navigate('/admin/login');
+  };
+
   const handleDelete = async () => {
     if (!webInfo) return;
     
@@ -148,7 +153,8 @@ const WebInfoAdmin = () => {
   return (
     <div className="flex bg-gray-50 min-h-screen">
       {/* Desktop Sidebar */}
-      <Sidebar />
+      <Sidebar onLogout={handleLogout} />
+
       
       {/* Mobile Sidebar Toggle */}
       {/* <MobileSidebarToggle 

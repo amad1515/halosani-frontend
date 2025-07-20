@@ -111,6 +111,11 @@ const VideoAdmin = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    navigate('/admin/login');
+  };
+
   const getYouTubeId = (url) => {
     if (!url) return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -127,9 +132,7 @@ const VideoAdmin = () => {
   return (
     <div className="flex bg-gray-50 min-h-screen">
       {/* Sidebar Desktop - selalu terlihat di layar besar */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+      <Sidebar onLogout={handleLogout} />
       
       {/* Toggle Sidebar Mobile */}
       {/* <MobileSidebarToggle 

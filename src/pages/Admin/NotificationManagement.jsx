@@ -82,10 +82,15 @@ const NotificationManagement = ({ onLogout }) => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+   const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    navigate('/admin/login');
+  };
+
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <Sidebar onLogout={onLogout} />
+      <Sidebar onLogout={handleLogout} />
       
       {/* Mobile Sidebar Toggle */}
       {/* <MobileSidebarToggle onLogout={onLogout} /> */}

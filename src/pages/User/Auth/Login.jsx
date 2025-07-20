@@ -84,7 +84,7 @@ const Login = () => {
   setLoading(true);
 
   try {
-    const response = await api.post('user/login', formData);
+    const response = await api.post('/user/login', formData);
     
     if (response.data.user_id) {
       showSuccessNotification('Please verify your email to continue');

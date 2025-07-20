@@ -4,7 +4,7 @@ import api from '../../../api/axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
-import { FiUser, FiMail, FiLock, FiMapPin, FiCalendar, FiAlertCircle } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiMapPin, FiCalendar } from 'react-icons/fi';
 import { FaVenusMars } from 'react-icons/fa';
 
 const Register = () => {
@@ -39,14 +39,10 @@ const Register = () => {
       progress: undefined,
       theme: "colored",
       style: {
-        background: '#34C759',
+        background: '#4CAF50',
         color: 'white',
         borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(52,199,89,0.2)',
-        borderLeft: '4px solid #32D74B',
-        padding: '16px 24px',
-        fontSize: '14px',
-        fontWeight: '500'
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
       }
     });
   };
@@ -61,179 +57,64 @@ const Register = () => {
       draggable: true,
       progress: undefined,
       theme: "colored",
-      transition: toast.flip,
       style: {
-        background: '#FF3B30',
+        background: '#F44336',
         color: 'white',
         borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(255,59,48,0.2)',
-        borderLeft: '4px solid #FF9500',
-        padding: '16px 24px',
-        fontSize: '14px',
-        fontWeight: '500'
-      },
-      icon: (
-        <div style={{
-          background: '#FF9500',
-          borderRadius: '50%',
-          width: '24px',
-          height: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white'
-        }}>
-          <FiAlertCircle size={14} />
-        </div>
-      )
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      }
     });
   };
 
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Nama Lengkap Kosong</div>
-          <div style={{ opacity: 0.9 }}>
-            Harap masukkan nama lengkap Anda untuk melanjutkan
-          </div>
-        </div>
-      );
-      return false;
-    }
-
-    if (!formData.email.includes('@')) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Format Email Tidak Valid</div>
-          <div style={{ opacity: 0.9 }}>
-            Harap masukkan alamat email yang valid (contoh: nama@domain.com)
-          </div>
-        </div>
-      );
-      return false;
-    }
-
-    if (formData.age < 13 || formData.age > 100) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Usia Tidak Valid</div>
-          <div style={{ opacity: 0.9 }}>
-            Usia harus antara 13 - 100 tahun untuk mendaftar
-          </div>
-        </div>
-      );
-      return false;
-    }
-
-    if (formData.password.length < 8) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Password Terlalu Pendek</div>
-          <div style={{ opacity: 0.9 }}>
-            Password harus terdiri dari minimal 8 karakter
-            <div style={{ marginTop: '8px', fontSize: '12px', opacity: 0.8 }}>
-              Tips: Gunakan kombinasi huruf besar, kecil, angka, dan simbol
-            </div>
-          </div>
-        </div>
-      );
-      return false;
-    }
-
-    if (formData.password !== formData.password_confirmation) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Password Tidak Cocok</div>
-          <div style={{ opacity: 0.9 }}>
-            Password dan konfirmasi password tidak sama. Silakan ketik ulang dengan hati-hati.
-          </div>
-        </div>
-      );
-      return false;
-    }
-
-    return true;
-  };
-
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault(); // Mencegah reload halaman saat submit
+  setLoading(true); // Menampilkan loading
 
-    if (!validateForm()) {
-      setLoading(false);
-      return;
+  try {
+    const response = await api.post('/register', formData); // Kirim data pendaftaran ke server
+
+    // Pastikan user_id diterima sebelum melakukan navigasi
+    if (!response.data.user_id) {
+      throw new Error('Pendaftaran berhasil tetapi ID pengguna tidak diterima');
     }
 
-    try {
-      const response = await api.post('/register', formData);
+    // Tampilkan notifikasi sukses
+    showSuccessNotification(response.data.message || 'Pendaftaran berhasil! Selamat bergabung di komunitas kami ❤️');
 
-      if (!response.data.user_id) {
-        throw new Error('Pendaftaran berhasil tetapi ID pengguna tidak diterima');
-      }
+    // Arahkan ke halaman verifikasi OTP
+    navigate('/user/verify-otp', { 
+      state: { 
+        userId: response.data.user_id, 
+        email: formData.email 
+      },
+      replace: true
+    });
+  } catch (error) {
+    console.error('Kesalahan saat mendaftar:', error);
 
-      showSuccessNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Pendaftaran Berhasil!</div>
-          <div style={{ opacity: 0.9 }}>
-            Selamat bergabung di komunitas kami ❤️. Silakan verifikasi email Anda.
-          </div>
-        </div>
-      );
+    // Ambil pesan error dari respons server, jika ada
+    let errorMessage = error.response?.data?.error 
+                    || error.response?.data?.message 
+                    || 'Pendaftaran gagal. Silakan coba lagi.';
 
-      navigate('/user/verify-otp', { 
-        state: { 
-          userId: response.data.user_id, 
-          email: formData.email 
-        },
-        replace: true
+    // Tangani kasus khusus jika user_id tidak diterima
+    if (error.message === 'Pendaftaran berhasil tetapi ID pengguna tidak diterima') {
+      errorMessage = 'Pendaftaran berhasil, tetapi verifikasi gagal. Silakan hubungi dukungan.';
+    }
+
+    showErrorNotification(errorMessage);
+
+    // Tampilkan pesan error validasi jika ada
+    if (error.response?.data?.errors) {
+      Object.values(error.response.data.errors).forEach(err => {
+        showErrorNotification(err[0]); // Tampilkan satu per satu
       });
-    } catch (error) {
-      console.error('Kesalahan saat mendaftar:', error);
-
-      let errorMessage = error.response?.data?.error 
-                      || error.response?.data?.message 
-                      || 'Pendaftaran gagal. Silakan coba lagi.';
-
-      if (error.message === 'Pendaftaran berhasil tetapi ID pengguna tidak diterima') {
-        errorMessage = 'Pendaftaran berhasil, tetapi verifikasi gagal. Silakan hubungi dukungan.';
-      }
-
-      if (error.response?.data?.errors) {
-        Object.entries(error.response.data.errors).forEach(([field, errors]) => {
-          let errorMsg = errors[0];
-          
-          switch(field) {
-            case 'email':
-              errorMsg = 'Email sudah terdaftar. Gunakan email lain atau <a href="/login" style="text-decoration:underline">masuk disini</a>';
-              break;
-            case 'password':
-              if (errorMsg.includes('confirmation')) {
-                errorMsg = 'Password dan konfirmasi password tidak cocok';
-              } else {
-                errorMsg = 'Password minimal 8 karakter dengan kombinasi huruf dan angka';
-              }
-              break;
-          }
-          
-          showErrorNotification(
-            <div>
-              <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                {field === 'password_confirmation' ? 'Konfirmasi Password' : 
-                 field === 'name' ? 'Nama Lengkap' :
-                 field.charAt(0).toUpperCase() + field.slice(1)}
-              </div>
-              <div style={{ opacity: 0.9 }} dangerouslySetInnerHTML={{ __html: errorMsg }} />
-            </div>
-          );
-        });
-      } else {
-        showErrorNotification(errorMessage);
-      }
-    } finally {
-      setLoading(false);
     }
-  };
+  } finally {
+    setLoading(false); // Sembunyikan loading
+  }
+};
+
 
   return (
     <motion.div 

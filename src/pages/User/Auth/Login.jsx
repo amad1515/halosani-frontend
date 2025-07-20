@@ -4,7 +4,7 @@ import api from '../../../api/axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -33,14 +33,10 @@ const Login = () => {
       progress: undefined,
       theme: "colored",
       style: {
-        background: '#34C759',
+        background: '#4CAF50',
         color: 'white',
         borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(52,199,89,0.2)',
-        borderLeft: '4px solid #32D74B',
-        padding: '16px 24px',
-        fontSize: '14px',
-        fontWeight: '500'
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
       }
     });
   };
@@ -55,114 +51,65 @@ const Login = () => {
       draggable: true,
       progress: undefined,
       theme: "colored",
-      transition: toast.flip,
       style: {
-        background: '#FF3B30',
+        background: '#F44336',
         color: 'white',
         borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(255,59,48,0.2)',
-        borderLeft: '4px solid #FF9500',
-        padding: '16px 24px',
-        fontSize: '14px',
-        fontWeight: '500'
-      },
-      icon: (
-        <div style={{
-          background: '#FF9500',
-          borderRadius: '50%',
-          width: '24px',
-          height: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white'
-        }}>
-          <FiAlertCircle size={14} />
-        </div>
-      )
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+      }
     });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    // Validasi client-side sederhana
-    if (!formData.email.includes('@')) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Format Email Tidak Valid</div>
-          <div style={{ opacity: 0.9 }}>
-            Harap masukkan alamat email yang valid (contoh: nama@domain.com)
-          </div>
-        </div>
-      );
-      setLoading(false);
+  try {
+    const response = await api.post('/login', formData);
+    
+    if (response.data.user_id) {
+      showSuccessNotification('Please verify your email to continue');
+      navigate('/user/verify-otp', { 
+        state: { 
+          userId: response.data.user_id, 
+          email: formData.email 
+        },
+        replace: true
+      });
       return;
     }
 
-    if (formData.password.length < 6) {
-      showErrorNotification(
-        <div>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>Password Terlalu Pendek</div>
-          <div style={{ opacity: 0.9 }}>
-            Password harus terdiri dari minimal 6 karakter
-          </div>
-        </div>
-      );
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await api.post('/login', formData);
+    // Simpan token dan redirect
+    localStorage.setItem('user_token', response.data.token);
+    showSuccessNotification('Welcome back! We\'re glad to see you again ❤️');
+    
+    // Redirect dengan replace untuk mencegah kembali ke login
+    navigate('/user/dashboard', { replace: true });
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    
+    let errorMessage = 'Login failed. Please try again.';
+    if (error.response) {
+      errorMessage = error.response.data.message || 
+                   error.response.data.error || 
+                   errorMessage;
       
-      if (response.data.user_id) {
-        showSuccessNotification('Harap verifikasi email Anda untuk melanjutkan');
-        navigate('/user/verify-otp', { 
-          state: { 
-            userId: response.data.user_id, 
-            email: formData.email 
-          },
-          replace: true
-        });
-        return;
+      if (error.response.status === 401) {
+        // Pastikan token dihapus jika ada
+        localStorage.removeItem('user_token');
+        errorMessage = 'Invalid credentials. Please check your email and password.';
+      } else if (error.response.status === 403) {
+        errorMessage = 'Account not verified. Please check your email for verification instructions.';
       }
-
-      localStorage.setItem('user_token', response.data.token);
-      showSuccessNotification('Selamat datang kembali! Kami senang melihat Anda lagi ❤️');
-      navigate('/user/dashboard', { replace: true });
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      
-      let errorMessage = 'Login gagal. Silakan coba lagi.';
-      if (error.response) {
-        if (error.response.status === 401) {
-          localStorage.removeItem('user_token');
-          errorMessage = (
-            <div>
-              <div style={{ fontWeight: '600', marginBottom: '4px' }}>Kombinasi Tidak Sesuai</div>
-              <div style={{ opacity: 0.9 }}>
-                Email atau password yang Anda masukkan tidak sesuai. Silakan coba lagi atau <a 
-                  href="/forgot-password" 
-                  style={{ textDecoration: 'underline', fontWeight: '500' }}
-                >reset password Anda</a>.
-              </div>
-            </div>
-          );
-        } else if (error.response.status === 403) {
-          errorMessage = 'Akun belum terverifikasi. Silakan cek email Anda untuk instruksi verifikasi.';
-        } else if (error.response.status === 422) {
-          errorMessage = 'Data yang dimasukkan tidak valid. Silakan periksa kembali.';
-        }
-      }
-      
-      showErrorNotification(errorMessage);
-    } finally {
-      setLoading(false);
     }
-  };
+    
+    showErrorNotification(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}

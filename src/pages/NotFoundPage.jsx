@@ -62,11 +62,11 @@ const NotFoundPage = () => {
           className="relative mb-8"
         >
           <div className="text-[180px] md:text-[220px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 opacity-20">
-            404
+            400
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-8xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-800">
-              404
+              400
             </div>
           </div>
         </motion.div>
@@ -75,14 +75,14 @@ const NotFoundPage = () => {
           variants={itemVariants}
           className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
         >
-          Halaman Tidak Ditemukan
+          Terjadi Kesalahan
         </motion.h1>
 
         <motion.p 
           variants={itemVariants}
           className="text-lg md:text-xl text-gray-600 mb-8"
         >
-          Maaf, sepertinya halaman yang Anda cari sudah tidak ada atau dipindahkan.
+          Maaf, sepertinya terjadi kesalahan silahkan kembali lagi.
         </motion.p>
 
         <motion.div
@@ -104,17 +104,7 @@ const NotFoundPage = () => {
           </Link>
         </motion.div>
 
-        <motion.div
-          variants={itemVariants}
-          className="mt-12 text-sm text-gray-400"
-        >
-          <p>Atau mungkin Anda ingin:</p>
-          <div className="flex justify-center space-x-4 mt-2">
-            <Link to="/login" className="hover:text-blue-600 transition">Masuk</Link>
-            <Link to="/register" className="hover:text-purple-600 transition">Daftar</Link>
-            <Link to="/contact" className="hover:text-blue-600 transition">Hubungi Kami</Link>
-          </div>
-        </motion.div>
+        
       </motion.div>
 
       {/* Animasi latar belakang */}
